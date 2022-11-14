@@ -137,3 +137,22 @@ streamerRouter.get("/findByCategories", async (req: Request, res: Response): Pro
 
     return res.status(200).send(streamers);
 });
+
+streamerRouter.post("/delete", async (req: Request, res: Response): Promise<Response> => {
+    const query = createQuery();
+    query.where = { id: req.body.id };
+
+    //Check d'abord si le streamer existe
+    const exist = await streamerRepo.findOne(query);
+
+    if (!exist) {
+        return res.status(301).send("Streamer does not exist !");
+    }
+    //Requete de delete du streamer avec son id
+    const deleted = await streamerRepo.destroy(query).catch((err: any) => {
+        console.log(err);
+        return res.status(301).send(err);
+    });
+
+    return res.status(200).send(!!deleted);
+});
