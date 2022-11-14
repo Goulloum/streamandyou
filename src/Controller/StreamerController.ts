@@ -118,10 +118,11 @@ streamerRouter.get("/findByName", async (req: Request, res: Response): Promise<R
     const query = createQuery();
     query.where = { name: req.body.name };
 
-    const streamers = await streamerRepo.findAll(query);
-    const streamersDTO = streamers.map((st: Streamer) => StreamerMapper.toDTO(st));
-
-    return res.status(200).send(streamersDTO);
+    const streamer = await streamerRepo.findOne(query);
+    if (!streamer) {
+        return res.status(301).send("No streamer found!");
+    }
+    return res.status(200).send(StreamerMapper.toDTO(streamer));
 });
 
 streamerRouter.get("/findByCategories", async (req: Request, res: Response): Promise<Response> => {

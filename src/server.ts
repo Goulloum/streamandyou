@@ -2,6 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import connection from "./Model";
 import { streamerRouter } from "./Controller/StreamerController";
+import { categoryRouter } from "./Controller/CategoryController";
 
 require("dotenv").config();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/streamer", streamerRouter);
+app.use("/category", categoryRouter);
 
 const start = async (): Promise<void> => {
     try {
