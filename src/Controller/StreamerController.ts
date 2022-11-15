@@ -4,156 +4,98 @@ import connection from "../Model";
 import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
 import { StreamerCategory } from "../Model/StreamerCategory";
+import { StreamerService } from "../Service/StreamerService";
 
 export const streamerRouter = Router();
+const streamerService = new StreamerService();
 
 const categoryRepo = connection.getRepository(Category);
 const streamerRepo = connection.getRepository(Streamer);
 const streamerCategoryRepo = connection.getRepository(StreamerCategory);
 
-const createQuery = () => {
-    return {
-        where: {},
-        include: [{ model: categoryRepo, where: {} }],
-    };
-};
-
-//Vu que sequelize c'est de la merde on peut automatiquement créer la relation
-//entre deux model dans la table intermédiaire ducoup je le fais à la main
-const setCategories = async (streamerId: number, categories: any): Promise<any> => {
-    categories.map(async (cat: any) => {
-        //Check si la categorie existe bien sinon throw une erreur
-        let existing = await categoryRepo.findOne({ where: { id: cat.id } });
-        if (!existing) {
-            throw new Error("Trying to add a non-existing category to streamer instance");
-        }
-
-        streamerCategoryRepo.create({
-            streamerId: streamerId,
-            categoryId: cat.id,
-        });
-    });
-};
-
 streamerRouter.get("/getAll", async (req: Request, res: Response): Promise<Response> => {
-    const streamers = await streamerRepo.findAll(createQuery());
-    const streamersDTO = streamers.map((streamer) => StreamerMapper.toDTO(streamer));
-
-    return res.status(200).send(streamersDTO);
+    try {
+        const streamers = await streamerService.findAll();
+        const streamersDTO = streamers.map((streamer: Streamer) => StreamerMapper.toDTO(streamer));
+        return res.status(200).send(streamersDTO);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
 });
 
 streamerRouter.get("/getById", async (req: Request, res: Response): Promise<Response> => {
-    const query = createQuery();
-    query.where = { id: req.body.id };
-    const streamer = await streamerRepo.findOne(query);
-
-    if (!streamer) {
-        console.log("No streamer found !");
-        return res.status(301).send("No streamer found");
+    try {
+        const streamer = await streamerService.findById(req.body.id);
+        if (!streamer) {
+            return res.status(200).send(null);
+        }
+        return res.status(200).send(StreamerMapper.toDTO(streamer));
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
     }
-
-    return res.status(200).send(StreamerMapper.toDTO(streamer));
 });
 
 streamerRouter.post("/add", async (req: Request, res: Response): Promise<Response> => {
-    //On récupère uniquement le streamer pas les categories et on le créer solo
-    const newStreamerRaw = {
-        name: req.body.name,
-    };
-    const newStreamer = await streamerRepo.create(newStreamerRaw);
-
-    //On isole la liste de categorie
-    const categoriesRaw: any[] = req.body.categories;
-    if (categoriesRaw) {
-        setCategories(newStreamer.id, categoriesRaw).catch((err: Error) => {
-            return res.status(301).send(err);
-        });
+    try {
+        const newStreamerRaw = {
+            name: req.body.name,
+            categories: req.body.categories,
+        };
+        const newStreamer = await streamerService.add(newStreamerRaw);
+        return res.status(200).send(StreamerMapper.toDTO(newStreamer));
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
     }
-    const query = createQuery();
-    query.where = { id: newStreamer.id };
-    const result = await streamerRepo.findOne(query);
-    if (!result) {
-        return res.status(301).send("Error while creating the streamer !");
-    }
-
-    return res.status(200).send(StreamerMapper.toDTO(result));
 });
 
 streamerRouter.post("/update", async (req: Request, res: Response): Promise<Response> => {
-    //On s'occupe d'abord du streamer pur
-    const updatedStreamerRaw = {
-        name: req.body.name,
-    };
-
-    const updatedCategoriesRaw: any[] = req.body.categories;
-
-    //Si le streamerId n'existe pas on renvoie une erreur
-    const query = createQuery();
-    query.where = { id: req.body.id };
-    const streamer = await streamerRepo.findOne(query);
-    if (!streamer) {
-        return res.status(301).send("Streamer not found !");
-    }
-
-    if (streamer.categories !== updatedCategoriesRaw) {
-        streamerCategoryRepo.destroy({ where: { streamerId: streamer.id } });
-        setCategories(streamer.id, updatedCategoriesRaw).catch((err) => {
-            console.log(err);
-            return res.status(301).send(err);
-        });
-    }
-    const updatedStreamer = await streamerRepo.update(updatedStreamerRaw, { where: { id: streamer.id } });
-    if (updatedStreamer) {
-        const result = await streamerRepo.findOne(query);
-        if (!result) {
-            return res.status(301).send("Error while updating !");
-        }
-        return res.status(200).send(StreamerMapper.toDTO(result));
-    }
-
-    return res.status(200).send(StreamerMapper.toDTO(streamer));
-});
-
-streamerRouter.get("/findByName", async (req: Request, res: Response): Promise<Response> => {
-    const query = createQuery();
-    query.where = { name: req.body.name };
-
-    const streamer = await streamerRepo.findOne(query);
-    if (!streamer) {
-        return res.status(301).send("No streamer found!");
-    }
-    return res.status(200).send(StreamerMapper.toDTO(streamer));
-});
-
-streamerRouter.get("/findByCategories", async (req: Request, res: Response): Promise<Response> => {
-    const categoriesId = req.body.categories.map((cat: any) => cat.id);
-
-    const query = createQuery();
-    query.include[0].where = { id: 1 };
-
-    const streamers = await streamerRepo.findAll(query).catch((err: any) => {
+    try {
+        const updateRaw = {
+            id: req.body.id,
+            name: req.body.name,
+            categories: req.body.categories,
+        };
+        const updatedStreamer = await streamerService.update(updateRaw);
+        return res.status(200).send(StreamerMapper.toDTO(updatedStreamer));
+    } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err);
-    });
+        return res.status(301).send(err.message);
+    }
+});
 
-    return res.status(200).send(streamers);
+streamerRouter.get("/getByName", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const streamer = await streamerService.findByName(req.body.name);
+        if (!streamer) {
+            return res.status(200).send(null);
+        }
+        return res.status(200).send(StreamerMapper.toDTO(streamer));
+    } catch (err: any) {
+        console.log(err);
+        return res.send(301).send(err.message);
+    }
+});
+
+streamerRouter.get("/getByCategories", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const streamers = await streamerService.findByCategories(req.body.categories);
+        const streamersDTO = streamers.map((streamer: Streamer) => StreamerMapper.toDTO(streamer));
+        return res.status(200).send(streamersDTO);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
 });
 
 streamerRouter.post("/delete", async (req: Request, res: Response): Promise<Response> => {
-    const query = createQuery();
-    query.where = { id: req.body.id };
-
-    //Check d'abord si le streamer existe
-    const exist = await streamerRepo.findOne(query);
-
-    if (!exist) {
-        return res.status(301).send("Streamer does not exist !");
-    }
-    //Requete de delete du streamer avec son id
-    const deleted = await streamerRepo.destroy(query).catch((err: any) => {
+    try {
+        const deleted = streamerService.delete(req.body.id);
+        return res.status(200).send(deleted);
+    } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err);
-    });
-
-    return res.status(200).send(!!deleted);
+        return res.status(301).send(err.message);
+    }
 });

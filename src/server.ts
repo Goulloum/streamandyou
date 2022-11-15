@@ -3,6 +3,7 @@ import express, { Request, Response } from "express";
 import connection from "./Model";
 import { streamerRouter } from "./Controller/StreamerController";
 import { categoryRouter } from "./Controller/CategoryController";
+import { userRouter } from "./Controller/UserController";
 
 require("dotenv").config();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use("/streamer", streamerRouter);
 app.use("/category", categoryRouter);
+app.use("/user", userRouter);
 
 const start = async (): Promise<void> => {
     try {
