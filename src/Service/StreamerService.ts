@@ -42,8 +42,8 @@ export class StreamerService implements IService<Streamer> {
 
         //On isole la liste de categorie
         const categoriesRaw: any[] = raw.categories;
-        if (categoriesRaw) {
-            this.setCategories(newStreamer.id, categoriesRaw).catch((err: Error) => {
+        if (categoriesRaw.length > 0) {
+            await this.setCategories(newStreamer.id, categoriesRaw).catch((err: Error) => {
                 throw new Error("Trying to add a non-existing category to streamer instance");
             });
         }
@@ -101,9 +101,9 @@ export class StreamerService implements IService<Streamer> {
         //check si les categories ont besoin d'etre update
         if (streamer.categories !== updatedCategoriesRaw) {
             //destruction des lignes representant l'association entre le streamer et les categories
-            this.streamerCategoryRepo.destroy({ where: { streamerId: streamer.id } });
+            await this.streamerCategoryRepo.destroy({ where: { streamerId: streamer.id } });
             //Création des nouvelles relations
-            this.setCategories(streamer.id, updatedCategoriesRaw);
+            await this.setCategories(streamer.id, updatedCategoriesRaw);
         }
         //Update du streamer en lui-même
         const update = await this.streamerRepo.update(updatedStreamerRaw, { where: { id: streamer.id } });

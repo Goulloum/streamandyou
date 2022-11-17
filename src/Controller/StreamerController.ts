@@ -1,17 +1,10 @@
 import { Request, Response, Router } from "express";
 import { StreamerMapper } from "../Mapper/StreamerMapper";
-import connection from "../Model";
-import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
-import { StreamerCategory } from "../Model/StreamerCategory";
 import { StreamerService } from "../Service/StreamerService";
 
 export const streamerRouter = Router();
 const streamerService = new StreamerService();
-
-const categoryRepo = connection.getRepository(Category);
-const streamerRepo = connection.getRepository(Streamer);
-const streamerCategoryRepo = connection.getRepository(StreamerCategory);
 
 streamerRouter.get("/getAll", async (req: Request, res: Response): Promise<Response> => {
     try {

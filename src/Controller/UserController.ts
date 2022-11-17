@@ -81,3 +81,17 @@ userRouter.post("/delete", async (req: Request, res: Response): Promise<Response
         return res.status(301).send(err.message);
     }
 });
+
+userRouter.get("/getByUsername", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const user = await userService.findByUsername(req.body.username);
+        if (!user) {
+            return res.status(200).send(null);
+        }
+
+        return res.status(200).send(UserMapper.toDTO(user));
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
+});
