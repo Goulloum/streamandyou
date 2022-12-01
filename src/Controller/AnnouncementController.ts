@@ -91,3 +91,15 @@ announcementRouter.get("/getByCompany", async (req: Request, res: Response): Pro
         return res.status(301).send(err.message);
     }
 });
+
+announcementRouter.get("/getRecent", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const value = req.body.limit ? req.body.limit : null;
+        const announcements = await announcementService.findRecent(value);
+        const announcementsDTO = announcements.map((announcement) => AnnouncementMapper.toDTO(announcement));
+        return res.status(200).send(announcementsDTO);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
+});

@@ -23,6 +23,7 @@
         "nodemon": "^2.0.20",
         "reflect-metadata": "^0.1.13",
         "sequelize": "^6.25.5",
-        "sequelize-typescript": "^2.1.5"
+        "sequelize-typescript": "^2.1.5",
+        "ts-node": "^10.9.1"
     }
 }

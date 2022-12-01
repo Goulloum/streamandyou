@@ -136,4 +136,23 @@ export class AnnouncementService implements IService<Announcement> {
         const announcements = await this.announcementRepo.findAll(query);
         return announcements;
     }
+
+    public async findRecent(limit: number | null): Promise<Announcement[]> {
+        if (!limit) {
+            const query: any = { ...this.createQuery(), order: [["date", "DESC"]] };
+            const announcements = await this.announcementRepo.findAll(query);
+            return announcements;
+        } else {
+            if (limit < 0) {
+                throw new Error("Limit must be a positive number !");
+            }
+            if (!Number.isInteger(limit)) {
+                throw new Error("Limit must be an integer !");
+            }
+            const query: any = { ...this.createQuery(), order: [["date", "DESC"]], limit: limit };
+
+            const announcements = await this.announcementRepo.findAll(query);
+            return announcements;
+        }
+    }
 }

@@ -19,7 +19,7 @@ Good luck to the next one
 
 */
 import "reflect-metadata";
-import express, { Request, Response } from "express";
+import express from "express";
 import connection from "./Model";
 import { streamerRouter } from "./Controller/StreamerController";
 import { categoryRouter } from "./Controller/CategoryController";
@@ -42,8 +42,8 @@ app.use("/company", companyRouter);
 const start = async (): Promise<void> => {
     try {
         await connection.sync({ alter: process.env.PROFILE === "dev" });
-        app.listen(8080, () => {
-            console.log("Server started on port 3000");
+        app.listen(process.env.SERVER_PORT, () => {
+            console.log("Server started on port 8080");
         });
     } catch (error) {
         console.error(error);

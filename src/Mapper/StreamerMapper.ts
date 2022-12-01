@@ -2,7 +2,7 @@ import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
 import { CategorieDTO, CategoryMapper } from "./CategoryMapper";
 
-export interface StreamerDTO {
+interface StreamerDTO {
     id: number;
     name: string;
     categories: CategorieDTO[];
