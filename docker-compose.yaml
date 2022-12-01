@@ -1,0 +1,34 @@
+version: '3'
+services:
+  mysqldb: 
+    image: mysql
+    environment:
+      - MYSQL_HOST=localhost
+      - MYSQL_DATABASE=StreamAndYou
+      - MYSQL_ROOT_PASSWORD=CeciEstUnMDPROOTsecure$$784523
+      - MYSQL_USER=StreamAndYou
+      - MYSQL_PASSWORD=&52&TQn2iy
+    restart: always
+    ports:
+      - 7777:3306
+    volumes:
+      - dbStreamAndYou:/var/lib/mysql
+      
+  api: 
+    build: .
+    restart: always
+    depends_on:
+      - mysqldb
+    ports:
+      - 8080:8080
+    environment:
+      - DB_HOST=mysqldb
+      - DB_NAME=StreamAndYou
+      - DB_USER=StreamAndYou
+      - DB_PASSWORD=&52&TQn2iy
+      - PROFILE=prod
+      - DB_PORT=7777
+      - SERVER_PORT=8080
+
+volumes:
+  dbStreamAndYou:
