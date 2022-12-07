@@ -88,7 +88,7 @@ export class AnnouncementService implements IService<Announcement> {
         return announcement;
     }
     public async findAll(): Promise<Announcement[]> {
-        const announcements = await this.announcementRepo.findAll();
+        const announcements = await this.announcementRepo.findAll(this.createQuery());
         return announcements;
     }
     public async update(raw: any): Promise<Announcement> {
