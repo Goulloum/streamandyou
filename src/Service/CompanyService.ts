@@ -10,7 +10,7 @@ export class CompanyService implements IService<Company> {
     private createQuery = () => {
         return {
             where: {},
-            include: [{ model: this.announcementRepo, where: {} }],
+            include: [{ model: this.announcementRepo, where: {}, required: false }],
         };
     };
 
@@ -52,7 +52,7 @@ export class CompanyService implements IService<Company> {
         return company;
     }
     public async findAll(): Promise<Company[]> {
-        const companies = await this.companyRepo.findAll();
+        const companies = await this.companyRepo.findAll(this.createQuery());
 
         return companies;
     }

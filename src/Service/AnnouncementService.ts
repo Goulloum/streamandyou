@@ -15,8 +15,8 @@ export class AnnouncementService implements IService<Announcement> {
         return {
             where: {},
             include: [
-                { model: this.categoryRepo, where: {} },
-                { model: this.companyRepo, where: {} },
+                { model: this.categoryRepo, where: {}, required: false },
+                { model: this.companyRepo, where: {}, required: false },
             ],
         };
     };
