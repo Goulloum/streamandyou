@@ -1,6 +1,4 @@
-import { Announcement } from "../Model/Announcement";
 import { Company } from "../Model/Company";
-import { AnnouncementDTO, AnnouncementMapper } from "./AnnouncementMapper";
 
 export interface CompanyDTO {
     id: number;

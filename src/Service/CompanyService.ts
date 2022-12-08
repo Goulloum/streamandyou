@@ -52,7 +52,7 @@ export class CompanyService implements IService<Company> {
         return company;
     }
     public async findAll(): Promise<Company[]> {
-        const companies = await this.companyRepo.findAll();
+        const companies = await this.companyRepo.findAll(this.createQuery());
 
         return companies;
     }
