@@ -11,5 +11,11 @@
     "emitDecoratorMetadata": true,
     "target": "esnext",
     "moduleResolution": "Node",
-  }
+  
+    
+  },
+  "include": ["src/"],
+  "entryPointStrategy": "expand",
+  "entryPoints": ["src/server.ts"]
+
 }

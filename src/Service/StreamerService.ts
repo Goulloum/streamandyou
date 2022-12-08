@@ -15,7 +15,7 @@ export class StreamerService implements IService<Streamer> {
     private createQuery = () => {
         return {
             where: {},
-            include: [{ model: this.categoryRepo, where: {} }],
+            include: [{ model: this.categoryRepo, where: {}, required: false }],
         };
     };
 

@@ -17,7 +17,7 @@ const connection = new Sequelize({
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: 7777,
+    // port: 7777,
     logging: false,
     models: [Streamer, StreamerCategory, Category, AnnouncementCategory, Announcement, Company, User],
 });

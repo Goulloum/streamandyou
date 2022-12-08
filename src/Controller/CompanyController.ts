@@ -82,3 +82,14 @@ companyRouter.get("/getByName", async (req: Request, res: Response): Promise<Res
         return res.status(301).send(err.message);
     }
 });
+
+companyRouter.get("/getMostActiveCompanies", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const companies = await companyService.findMostActiveCompany();
+        const companiesDTO = companies.map((company: Company) => CompanyMapper.toDTOCount(company));
+        return res.status(200).send(companiesDTO);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
+});

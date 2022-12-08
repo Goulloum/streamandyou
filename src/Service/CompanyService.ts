@@ -10,7 +10,7 @@ export class CompanyService implements IService<Company> {
     private createQuery = () => {
         return {
             where: {},
-            include: [{ model: this.announcementRepo, where: {} }],
+            include: [{ model: this.announcementRepo, where: {}, required: false, attributes: [] }],
         };
     };
 
@@ -83,5 +83,15 @@ export class CompanyService implements IService<Company> {
 
         const company = await this.companyRepo.findOne(query);
         return company;
+    }
+    public async findMostActiveCompany(): Promise<any> {
+        const query: any = {
+            attributes: { include: [[connection.Sequelize.fn("COUNT", connection.Sequelize.col("announcements.companyId")), "nbAnnouncement"]] },
+            include: [{ model: this.announcementRepo, attributes: [] }],
+            group: ["announcements.companyId"],
+            order: [["nbAnnouncement", "DESC"]],
+        };
+        const companies = await this.companyRepo.findAll(query);
+        return companies;
     }
 }

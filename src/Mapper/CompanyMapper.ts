@@ -5,7 +5,10 @@ import { AnnouncementDTO, AnnouncementMapper } from "./AnnouncementMapper";
 export interface CompanyDTO {
     id: number;
     name: string;
-    announcements: AnnouncementDTO[];
+}
+
+export interface CompanyDTOCount extends CompanyDTO {
+    countAnnouncement: number;
 }
 
 export class CompanyMapper {
@@ -13,7 +16,14 @@ export class CompanyMapper {
         return {
             id: companyModel.id,
             name: companyModel.dataValues.name,
-            announcements: companyModel.dataValues.announcements?.map((announcement: Announcement) => AnnouncementMapper.toDTO(announcement)),
+        };
+    };
+
+    public static toDTOCount = (companyModel: Company): CompanyDTOCount => {
+        return {
+            id: companyModel.id,
+            name: companyModel.dataValues.name,
+            countAnnouncement: companyModel.dataValues.nbAnnouncement,
         };
     };
 }
