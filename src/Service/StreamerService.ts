@@ -3,6 +3,7 @@ import connection from "../Model";
 import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
 import { StreamerCategory } from "../Model/StreamerCategory";
+import { PasswordUtility } from "../Utility/PasswordUtility";
 import { IService } from "./IService";
 
 export class StreamerService implements IService<Streamer> {
@@ -37,7 +38,19 @@ export class StreamerService implements IService<Streamer> {
     public async add(raw: any): Promise<Streamer> {
         const newStreamerRaw = {
             name: raw.name,
+            password: raw.password,
+            email: raw.email,
+            telephone: raw.telephone,
+            sexe: raw.sexe,
         };
+
+        const exist = await this.streamerRepo.findOne({ where: { email: newStreamerRaw.email } });
+        if (!!exist) {
+            throw new Error("Email already exist !");
+        }
+
+        newStreamerRaw.password = PasswordUtility.hashPassword(newStreamerRaw.password);
+
         const newStreamer = await this.streamerRepo.create(newStreamerRaw);
 
         //On isole la liste de categorie
@@ -87,11 +100,23 @@ export class StreamerService implements IService<Streamer> {
         //On s'occupe d'abord du streamer pur
         const updatedStreamerRaw = {
             name: raw.name,
+            password: raw.password,
+            email: raw.email,
+            telephone: raw.telephone,
+            sexe: raw.sexe,
         };
+
+        const exist = await this.streamerRepo.findOne({ where: { email: updatedStreamerRaw.email } });
+        if (!!exist) {
+            throw new Error("Email already exist !");
+        }
+
+        updatedStreamerRaw.password = PasswordUtility.hashPassword(updatedStreamerRaw.password);
 
         const updatedCategoriesRaw: any[] = raw.categories;
 
         //Si le streamerId n'existe pas on renvoie une erreur
+        console.log(raw.id);
         const query = this.createQuery();
         query.where = { id: raw.id };
         const streamer = await this.streamerRepo.findOne(query);
@@ -132,5 +157,19 @@ export class StreamerService implements IService<Streamer> {
         const streamers = await this.streamerRepo.findAll(query);
 
         return streamers;
+    }
+
+    public async authenticate(email: string, password: string): Promise<Boolean> {
+        const query = this.createQuery();
+        query.where = { email: email };
+
+        const streamer = await this.streamerRepo.findOne(query);
+        if (!streamer) {
+            throw new Error("User not found !");
+        }
+
+        const authenticate = await PasswordUtility.comparePassword(password, streamer.dataValues.password);
+
+        return authenticate;
     }
 }

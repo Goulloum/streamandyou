@@ -26,10 +26,15 @@ import { categoryRouter } from "./Controller/CategoryController";
 import { userRouter } from "./Controller/UserController";
 import { announcementRouter } from "./Controller/AnnouncementController";
 import { companyRouter } from "./Controller/CompanyController";
+import cors from "cors";
 
 require("dotenv").config();
+const corsOptions: cors.CorsOptions = {
+    origin: "*",
+};
 
 const app = express();
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

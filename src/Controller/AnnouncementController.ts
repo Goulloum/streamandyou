@@ -103,3 +103,15 @@ announcementRouter.get("/getRecent", async (req: Request, res: Response): Promis
         return res.status(301).send(err.message);
     }
 });
+
+announcementRouter.get("/getAllByOrder", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const streamers = await announcementService.findAllOrder(req.body.order, req.body.direction);
+
+        const streamersDTO = streamers.map((announcement) => AnnouncementMapper.toDTO(announcement));
+        return res.status(200).send(streamersDTO);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
+});

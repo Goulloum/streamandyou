@@ -34,6 +34,10 @@ streamerRouter.post("/add", async (req: Request, res: Response): Promise<Respons
     try {
         const newStreamerRaw = {
             name: req.body.name,
+            password: req.body.password,
+            email: req.body.email,
+            telephone: req.body.telephone,
+            sexe: req.body.sexe,
             categories: req.body.categories,
         };
         const newStreamer = await streamerService.add(newStreamerRaw);
@@ -49,6 +53,10 @@ streamerRouter.post("/update", async (req: Request, res: Response): Promise<Resp
         const updateRaw = {
             id: req.body.id,
             name: req.body.name,
+            password: req.body.password,
+            email: req.body.email,
+            telephone: req.body.telephone,
+            sexe: req.body.sexe,
             categories: req.body.categories,
         };
         const updatedStreamer = await streamerService.update(updateRaw);
@@ -87,6 +95,16 @@ streamerRouter.post("/delete", async (req: Request, res: Response): Promise<Resp
     try {
         const deleted = streamerService.delete(req.body.id);
         return res.status(200).send(deleted);
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
+});
+
+streamerRouter.post("/authenticate", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const authenticate = await streamerService.authenticate(req.body.email, req.body.password);
+        return res.status(200).send(authenticate);
     } catch (err: any) {
         console.log(err);
         return res.status(301).send(err.message);

@@ -159,4 +159,12 @@ export class AnnouncementService implements IService<Announcement> {
             return announcements;
         }
     }
+
+    public async findAllOrder(order: string, direction: string): Promise<Announcement[]> {
+        const query: any = { ...this.createQuery(), order: [[order, direction]] };
+
+        const streamers = await this.announcementRepo.findAll(query);
+
+        return streamers;
+    }
 }
