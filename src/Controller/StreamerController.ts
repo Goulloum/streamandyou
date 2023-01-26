@@ -104,7 +104,7 @@ streamerRouter.post("/delete", async (req: Request, res: Response): Promise<Resp
 streamerRouter.post("/authenticate", async (req: Request, res: Response): Promise<Response> => {
     try {
         const authenticate = await streamerService.authenticate(req.body.email, req.body.password);
-        return res.status(200).send(authenticate);
+        return res.status(200).send({ ...authenticate, user: StreamerMapper.toDTO(authenticate.user) });
     } catch (err: any) {
         console.log(err);
         return res.status(301).send(err.message);

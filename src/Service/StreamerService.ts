@@ -5,6 +5,7 @@ import { Streamer } from "../Model/Streamer";
 import { StreamerCategory } from "../Model/StreamerCategory";
 import { PasswordUtility } from "../Utility/PasswordUtility";
 import { IService } from "./IService";
+import jwt from "jsonwebtoken";
 
 export class StreamerService implements IService<Streamer> {
     private streamerRepo = connection.getRepository(Streamer);
@@ -49,7 +50,7 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Email already exist !");
         }
 
-        newStreamerRaw.password = PasswordUtility.hashPassword(newStreamerRaw.password);
+        newStreamerRaw.password = await PasswordUtility.hashPassword(newStreamerRaw.password);
 
         const newStreamer = await this.streamerRepo.create(newStreamerRaw);
 
@@ -111,7 +112,7 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Email already exist !");
         }
 
-        updatedStreamerRaw.password = PasswordUtility.hashPassword(updatedStreamerRaw.password);
+        updatedStreamerRaw.password = await PasswordUtility.hashPassword(updatedStreamerRaw.password);
 
         const updatedCategoriesRaw: any[] = raw.categories;
 
@@ -159,7 +160,7 @@ export class StreamerService implements IService<Streamer> {
         return streamers;
     }
 
-    public async authenticate(email: string, password: string): Promise<Boolean> {
+    public async authenticate(email: string, password: string): Promise<{ user: Streamer; token: string }> {
         const query = this.createQuery();
         query.where = { email: email };
 
@@ -169,7 +170,15 @@ export class StreamerService implements IService<Streamer> {
         }
 
         const authenticate = await PasswordUtility.comparePassword(password, streamer.dataValues.password);
+        const token = jwt.sign({ streamer }, process.env.PRIVATE_KEY!, { expiresIn: 60 * 60 });
 
-        return authenticate;
+        if (!authenticate) {
+            throw new Error("User not found !");
+        }
+
+        return {
+            user: streamer,
+            token: token,
+        };
     }
 }
