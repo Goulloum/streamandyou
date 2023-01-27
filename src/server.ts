@@ -38,6 +38,8 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+console.log(process.env.PRIVATE_KEY)
+
 app.use("/streamer", streamerRouter);
 app.use("/category", categoryRouter);
 app.use("/user", userRouter);
@@ -48,7 +50,7 @@ const start = async (): Promise<void> => {
     try {
         await connection.sync({ alter: process.env.PROFILE === "dev" });
         app.listen(process.env.SERVER_PORT, () => {
-            console.log("Server started on port 8080");
+            console.log("Server started on port " + process.env.SERVER_PORT);
         });
     } catch (error) {
         console.error(error);
