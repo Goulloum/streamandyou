@@ -82,7 +82,7 @@ announcementRouter.post("/update", async (req: Request, res: Response): Promise<
 
 announcementRouter.get("/getByCompany", async (req: Request, res: Response): Promise<Response> => {
     try {
-        const announcements: Announcement[] = await announcementService.findByCompany(req.body.company.id);
+        const announcements: Announcement[] = await announcementService.findByCompany(req.body.id);
         const announcementsDTO = announcements.map((announcement: Announcement) => AnnouncementMapper.toDTO(announcement));
 
         return res.status(200).send(announcementsDTO);
