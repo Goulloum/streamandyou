@@ -6,18 +6,27 @@ import { StreamerCategory } from "../Model/StreamerCategory";
 import { PasswordUtility } from "../Utility/PasswordUtility";
 import { IService } from "./IService";
 import jwt from "jsonwebtoken";
+import { Announcement } from "../Model/Announcement";
+import { StreamerAnnouncement } from "../Model/StreamerAnnouncement";
 
 export class StreamerService implements IService<Streamer> {
     private streamerRepo = connection.getRepository(Streamer);
 
     private categoryRepo = connection.getRepository(Category);
 
+    private announcementRepo = connection.getRepository(Announcement);
+
+    private streamerAnnouncementRepo = connection.getRepository(StreamerAnnouncement);
+
     private streamerCategoryRepo = connection.getRepository(StreamerCategory);
 
     private createQuery = () => {
         return {
             where: {},
-            include: [{ model: this.categoryRepo, where: {}, required: false }],
+            include: [
+                { model: this.categoryRepo, where: {}, required: false },
+                { model: this.announcementRepo, where: {}, required: false },
+            ],
         };
     };
 
@@ -117,7 +126,6 @@ export class StreamerService implements IService<Streamer> {
         const updatedCategoriesRaw: any[] = raw.categories;
 
         //Si le streamerId n'existe pas on renvoie une erreur
-        console.log(raw.id);
         const query = this.createQuery();
         query.where = { id: raw.id };
         const streamer = await this.streamerRepo.findOne(query);
@@ -180,5 +188,29 @@ export class StreamerService implements IService<Streamer> {
             user: streamer,
             token: token,
         };
+    }
+
+    public async addAnnouncement(streamerId: number, announcementId: number): Promise<Streamer> {
+        let existStreamer = await this.streamerRepo.findOne({ ...this.createQuery(), where: { id: streamerId } });
+        if (!existStreamer) {
+            throw new Error("Trying to add an announcement to a non-existing streamer !");
+        }
+        let existAnnouncement = await this.announcementRepo.findOne({ where: { id: announcementId } });
+        if (!existAnnouncement) {
+            throw new Error("Trying to add a non-existing announcement to a streamer !");
+        }
+
+        let existRelation = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
+        if (!!existRelation) {
+            return existStreamer;
+        }
+        await this.streamerAnnouncementRepo.create({ streamerId: streamerId, announcementId: announcementId });
+
+        const result = await this.streamerRepo.findOne(this.createQuery());
+        if (!result) {
+            throw new Error("An error occured while binding the announcement with the streamer !");
+        }
+
+        return result;
     }
 }

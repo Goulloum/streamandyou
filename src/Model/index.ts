@@ -4,6 +4,7 @@ import { AnnouncementCategory } from "./AnnouncementCategory";
 import { Category } from "./Category";
 import { Company } from "./Company";
 import { Streamer } from "./Streamer";
+import { StreamerAnnouncement } from "./StreamerAnnouncement";
 import { StreamerCategory } from "./StreamerCategory";
 import { User } from "./User";
 require("dotenv").config();
@@ -19,7 +20,7 @@ const connection = new Sequelize({
     database: process.env.DB_NAME,
     // port: 7777,
     logging: false,
-    models: [Streamer, StreamerCategory, Category, AnnouncementCategory, Announcement, Company, User],
+    models: [Streamer, StreamerCategory, StreamerAnnouncement, Category, AnnouncementCategory, Announcement, Company, User],
 });
 
 export default connection;

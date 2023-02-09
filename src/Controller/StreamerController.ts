@@ -110,3 +110,13 @@ streamerRouter.post("/authenticate", async (req: Request, res: Response): Promis
         return res.status(301).send(err.message);
     }
 });
+
+streamerRouter.post("/addAnnouncement", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const streamer = await streamerService.addAnnouncement(req.body.streamer.id, req.body.announcement.id);
+        return res.status(200).send(StreamerMapper.toDTO(streamer));
+    } catch (err: any) {
+        console.log(err);
+        return res.status(301).send(err.message);
+    }
+});
