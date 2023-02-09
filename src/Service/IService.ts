@@ -1,5 +1,3 @@
-import { StreamerDTO } from "../Mapper/StreamerMapper";
-
 export interface IService<T> {
     add(raw: any): Promise<T>;
     delete(id: number): Promise<Boolean>;

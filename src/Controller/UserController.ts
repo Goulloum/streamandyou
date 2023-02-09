@@ -84,6 +84,7 @@ userRouter.post("/delete", async (req: Request, res: Response): Promise<Response
 
 userRouter.get("/getByUsername", async (req: Request, res: Response): Promise<Response> => {
     try {
+        console.log(req.body);
         const user = await userService.findByUsername(req.body.username);
         if (!user) {
             return res.status(200).send(null);

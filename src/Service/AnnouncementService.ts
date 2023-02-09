@@ -15,8 +15,8 @@ export class AnnouncementService implements IService<Announcement> {
         return {
             where: {},
             include: [
-                { model: this.categoryRepo, where: {} },
-                { model: this.companyRepo, where: {} },
+                { model: this.categoryRepo, where: {}, required: false },
+                { model: this.companyRepo, where: {}, required: false },
             ],
         };
     };
@@ -45,6 +45,10 @@ export class AnnouncementService implements IService<Announcement> {
             date: raw.date,
             companyId: raw.company.id,
         };
+
+        if (!announcementRaw.companyId) {
+            throw new Error("Announcement must have a company !");
+        }
 
         const newAnnouncement = await this.announcementRepo.create(announcementRaw);
 
@@ -88,7 +92,7 @@ export class AnnouncementService implements IService<Announcement> {
         return announcement;
     }
     public async findAll(): Promise<Announcement[]> {
-        const announcements = await this.announcementRepo.findAll();
+        const announcements = await this.announcementRepo.findAll(this.createQuery());
         return announcements;
     }
     public async update(raw: any): Promise<Announcement> {
@@ -135,5 +139,32 @@ export class AnnouncementService implements IService<Announcement> {
 
         const announcements = await this.announcementRepo.findAll(query);
         return announcements;
+    }
+
+    public async findRecent(limit: number | null): Promise<Announcement[]> {
+        if (!limit) {
+            const query: any = { ...this.createQuery(), order: [["updatedAt", "DESC"]] };
+            const announcements = await this.announcementRepo.findAll(query);
+            return announcements;
+        } else {
+            if (limit < 0) {
+                throw new Error("Limit must be a positive number !");
+            }
+            if (!Number.isInteger(limit)) {
+                throw new Error("Limit must be an integer !");
+            }
+            const query: any = { ...this.createQuery(), order: [["updatedAt", "DESC"]], limit: limit };
+
+            const announcements = await this.announcementRepo.findAll(query);
+            return announcements;
+        }
+    }
+
+    public async findAllOrder(order: string, direction: string): Promise<Announcement[]> {
+        const query: any = { ...this.createQuery(), order: [[order, direction]] };
+
+        const streamers = await this.announcementRepo.findAll(query);
+
+        return streamers;
     }
 }
