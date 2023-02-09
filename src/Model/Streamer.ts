@@ -23,7 +23,12 @@ export class Streamer extends Model {
     @AllowNull(true)
     @Column(DataType.STRING)
     sexe!: string;
+    
+    @AllowNull(false)
+    @Column(DataType.STRING)
+    photo!: string;
 
     @BelongsToMany(() => Category, () => StreamerCategory)
     categories!: Category[];
+
 }

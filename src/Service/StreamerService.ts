@@ -43,6 +43,7 @@ export class StreamerService implements IService<Streamer> {
             email: raw.email,
             telephone: raw.telephone,
             sexe: raw.sexe,
+            photo: raw.photo,
         };
 
         const exist = await this.streamerRepo.findOne({ where: { email: newStreamerRaw.email } });

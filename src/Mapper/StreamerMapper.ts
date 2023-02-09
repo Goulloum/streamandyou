@@ -1,3 +1,4 @@
+import { BlobDataType } from "sequelize";
 import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
 import { CategorieDTO, CategoryMapper } from "./CategoryMapper";
@@ -10,6 +11,7 @@ export interface StreamerDTO {
     telephone: string;
     sexe: string;
     categories: CategorieDTO[];
+    photo: string;
 }
 
 export class StreamerMapper {
@@ -22,6 +24,7 @@ export class StreamerMapper {
             telephone: streamerModel.dataValues.telephone,
             sexe: streamerModel.dataValues.sexe,
             categories: streamerModel.dataValues.categories?.map((cat: Category) => CategoryMapper.toDTO(cat)),
+            photo: streamerModel.dataValues.photo,
         };
     };
 }
