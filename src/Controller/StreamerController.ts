@@ -39,6 +39,7 @@ streamerRouter.post("/add", async (req: Request, res: Response): Promise<Respons
             telephone: req.body.telephone,
             sexe: req.body.sexe,
             categories: req.body.categories,
+            photo: req.body.photo,
         };
         const newStreamer = await streamerService.add(newStreamerRaw);
         return res.status(200).send(StreamerMapper.toDTO(newStreamer));
@@ -58,6 +59,7 @@ streamerRouter.post("/update", async (req: Request, res: Response): Promise<Resp
             telephone: req.body.telephone,
             sexe: req.body.sexe,
             categories: req.body.categories,
+            photo: req.body.photo
         };
         const updatedStreamer = await streamerService.update(updateRaw);
         return res.status(200).send(StreamerMapper.toDTO(updatedStreamer));
