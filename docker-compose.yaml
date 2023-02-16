@@ -20,15 +20,16 @@ services:
     depends_on:
       - mysqldb
     ports:
-      - 8080:8080
+      - 8081:8080
     environment:
       - DB_HOST=mysqldb
       - DB_NAME=StreamAndYou
       - DB_USER=StreamAndYou
       - DB_PASSWORD=&52&TQn2iy
-      - PROFILE=prod
+      - PROFILE=dev
       - DB_PORT=7777
       - SERVER_PORT=8080
+      - PRIVATE_KEY=VeriSECRète
 
 volumes:
   dbStreamAndYou:

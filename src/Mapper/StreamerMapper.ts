@@ -1,4 +1,5 @@
 import { Announcement } from "../Model/Announcement";
+import { BlobDataType } from "sequelize";
 import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
 import { AnnouncementDTO, AnnouncementMapper } from "./AnnouncementMapper";
@@ -12,6 +13,7 @@ export interface StreamerDTO {
     telephone: string;
     sexe: string;
     categories: CategorieDTO[];
+    photo: string;
     announcements: AnnouncementStreamerDTO[];
 }
 
@@ -46,6 +48,7 @@ export class StreamerMapper {
                     dateAcceptedByStreamer: an.dataValues.StreamerAnnouncement.createdAt,
                 };
             }),
+            photo: streamerModel.dataValues.photo,
         };
     };
 }
