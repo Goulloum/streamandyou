@@ -17,7 +17,7 @@ streamerRouter.get("/getAll", async (req: Request, res: Response): Promise<Respo
     }
 });
 
-streamerRouter.get("/getById", async (req: Request, res: Response): Promise<Response> => {
+streamerRouter.post("/getById", async (req: Request, res: Response): Promise<Response> => {
     try {
         const streamer = await streamerService.findById(req.body.id);
         if (!streamer) {
@@ -67,7 +67,7 @@ streamerRouter.post("/update", async (req: Request, res: Response): Promise<Resp
     }
 });
 
-streamerRouter.get("/getByName", async (req: Request, res: Response): Promise<Response> => {
+streamerRouter.post("/getByName", async (req: Request, res: Response): Promise<Response> => {
     try {
         const streamer = await streamerService.findByName(req.body.name);
         if (!streamer) {
@@ -80,7 +80,7 @@ streamerRouter.get("/getByName", async (req: Request, res: Response): Promise<Re
     }
 });
 
-streamerRouter.get("/getByCategories", async (req: Request, res: Response): Promise<Response> => {
+streamerRouter.post("/getByCategories", async (req: Request, res: Response): Promise<Response> => {
     try {
         const streamers = await streamerService.findByCategories(req.body.categories);
         const streamersDTO = streamers.map((streamer: Streamer) => StreamerMapper.toDTO(streamer));

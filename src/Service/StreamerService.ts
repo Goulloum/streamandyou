@@ -95,6 +95,7 @@ export class StreamerService implements IService<Streamer> {
         return !!deleted;
     }
     public async findById(id: number): Promise<Streamer | null> {
+        console.log("hereService");
         const query = this.createQuery();
         query.where = { id: id };
         const streamer = await this.streamerRepo.findOne(query);

@@ -7,7 +7,7 @@ export const announcementRouter = Router();
 
 const announcementService = new AnnouncementService();
 
-announcementRouter.get("/getById", async (req: Request, res: Response): Promise<Response> => {
+announcementRouter.post("/getById", async (req: Request, res: Response): Promise<Response> => {
     try {
         const announcement = await announcementService.findById(req.body.id);
 
@@ -80,7 +80,7 @@ announcementRouter.post("/update", async (req: Request, res: Response): Promise<
     }
 });
 
-announcementRouter.get("/getByCompany", async (req: Request, res: Response): Promise<Response> => {
+announcementRouter.post("/getByCompany", async (req: Request, res: Response): Promise<Response> => {
     try {
         const announcements: Announcement[] = await announcementService.findByCompany(req.body.id);
         const announcementsDTO = announcements.map((announcement: Announcement) => AnnouncementMapper.toDTO(announcement));
@@ -92,7 +92,7 @@ announcementRouter.get("/getByCompany", async (req: Request, res: Response): Pro
     }
 });
 
-announcementRouter.get("/getRecent", async (req: Request, res: Response): Promise<Response> => {
+announcementRouter.post("/getRecent", async (req: Request, res: Response): Promise<Response> => {
     try {
         const value = req.body.limit ? req.body.limit : null;
         const announcements = await announcementService.findRecent(value);
@@ -104,7 +104,7 @@ announcementRouter.get("/getRecent", async (req: Request, res: Response): Promis
     }
 });
 
-announcementRouter.get("/getAllByOrder", async (req: Request, res: Response): Promise<Response> => {
+announcementRouter.post("/getAllByOrder", async (req: Request, res: Response): Promise<Response> => {
     try {
         const streamers = await announcementService.findAllOrder(req.body.order, req.body.direction);
 

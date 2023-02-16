@@ -31,7 +31,7 @@ categoryRouter.get("/getAll", async (req: Request, res: Response): Promise<Respo
     }
 });
 
-categoryRouter.get("/getById", async (req: Request, res: Response): Promise<Response> => {
+categoryRouter.post("/getById", async (req: Request, res: Response): Promise<Response> => {
     try {
         const category = await categoryService.findById(req.body.id);
         if (!category) {
@@ -82,7 +82,7 @@ categoryRouter.post("/delete", async (req: Request, res: Response): Promise<Resp
     }
 });
 
-categoryRouter.get("/getByLibelle", async (req: Request, res: Response): Promise<Response> => {
+categoryRouter.post("/getByLibelle", async (req: Request, res: Response): Promise<Response> => {
     try {
         const category = await categoryService.findByLibelle(req.body.libelle);
         if (!category) {

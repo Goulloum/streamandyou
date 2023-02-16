@@ -18,7 +18,7 @@ companyRouter.get("/getAll", async (req: Request, res: Response): Promise<Respon
     }
 });
 
-companyRouter.get("/getById", async (req: Request, res: Response): Promise<Response> => {
+companyRouter.post("/getById", async (req: Request, res: Response): Promise<Response> => {
     try {
         const company = await companyService.findById(req.body.id);
         if (!company) {
@@ -70,7 +70,7 @@ companyRouter.post("/update", async (req: Request, res: Response): Promise<Respo
     }
 });
 
-companyRouter.get("/getByName", async (req: Request, res: Response): Promise<Response> => {
+companyRouter.post("/getByName", async (req: Request, res: Response): Promise<Response> => {
     try {
         const company = await companyService.findByName(req.body.name);
         if (!company) {

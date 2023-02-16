@@ -17,7 +17,7 @@ userRouter.get("/getAll", async (req: Request, res: Response): Promise<Response>
     }
 });
 
-userRouter.get("/getById", async (req: Request, res: Response): Promise<Response> => {
+userRouter.post("/getById", async (req: Request, res: Response): Promise<Response> => {
     try {
         const user = await userService.findById(req.body.id);
         if (!user) {
@@ -82,7 +82,7 @@ userRouter.post("/delete", async (req: Request, res: Response): Promise<Response
     }
 });
 
-userRouter.get("/getByUsername", async (req: Request, res: Response): Promise<Response> => {
+userRouter.post("/getByUsername", async (req: Request, res: Response): Promise<Response> => {
     try {
         console.log(req.body);
         const user = await userService.findByUsername(req.body.username);
