@@ -207,7 +207,7 @@ export class StreamerService implements IService<Streamer> {
         }
 
         let count = await this.streamerAnnouncementRepo.findAll({ where: { announcementId: announcementId } });
-        if (count.length > existAnnouncement.maxStreamer) {
+        if (existAnnouncement.maxStreamer && count.length > existAnnouncement.maxStreamer) {
             throw new Error("Max streamer count has already been fullfiled for this announcement !");
         }
         await this.streamerAnnouncementRepo.create({ streamerId: streamerId, announcementId: announcementId });
