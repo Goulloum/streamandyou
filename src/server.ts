@@ -38,8 +38,6 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-console.log(process.env.PRIVATE_KEY)
-
 app.use("/streamer", streamerRouter);
 app.use("/category", categoryRouter);
 app.use("/user", userRouter);

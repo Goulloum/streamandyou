@@ -9,8 +9,6 @@ import { StreamerCategory } from "./StreamerCategory";
 import { User } from "./User";
 require("dotenv").config();
 
-console.log(process.env.DB_USER);
-
 const connection = new Sequelize({
     repositoryMode: true,
     dialect: "mysql",

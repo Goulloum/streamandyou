@@ -25,6 +25,9 @@ interface AnnouncementStreamerDTO {
     date: Date;
     companyId: number;
     dateAcceptedByStreamer: Date;
+    active: number;
+    maxStreamer?: number;
+    status: Boolean;
 }
 
 export class StreamerMapper {
@@ -46,6 +49,9 @@ export class StreamerMapper {
                     date: an.dataValues.date,
                     companyId: an.dataValues.companyId,
                     dateAcceptedByStreamer: an.dataValues.StreamerAnnouncement.createdAt,
+                    active: an.dataValues.StreamerAnnouncement.active,
+                    maxStreamer: an.dataValues.maxStreamer,
+                    status: an.dataValues.status,
                 };
             }),
             photo: streamerModel.dataValues.photo,

@@ -1,4 +1,4 @@
-import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { AllowNull, BelongsTo, BelongsToMany, Column, DataType, Default, ForeignKey, Model, Table } from "sequelize-typescript";
 import { AnnouncementCategory } from "./AnnouncementCategory";
 import { Category } from "./Category";
 import { Company } from "./Company";
@@ -20,6 +20,12 @@ export class Announcement extends Model {
     @AllowNull(false)
     @Column(DataType.DATE)
     date!: Date;
+
+    @Column(DataType.INTEGER)
+    maxStreamer!: number;
+
+    @Column(DataType.BOOLEAN)
+    status!: Boolean;
 
     @BelongsToMany(() => Category, () => AnnouncementCategory)
     categories!: Category[];

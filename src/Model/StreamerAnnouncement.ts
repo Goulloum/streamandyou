@@ -1,4 +1,4 @@
-import { Column, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Default, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Announcement } from "./Announcement";
 import { Streamer } from "./Streamer";
 
@@ -11,4 +11,8 @@ export class StreamerAnnouncement extends Model {
     @ForeignKey(() => Announcement)
     @Column
     announcementId!: number;
+
+    @Default(1)
+    @Column(DataType.INTEGER)
+    active!: number;
 }

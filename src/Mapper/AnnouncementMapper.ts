@@ -11,6 +11,8 @@ export interface AnnouncementDTO {
     date: Date;
     categories: CategorieDTO[];
     company: CompanyDTO;
+    maxStreamer: number;
+    status: Boolean;
 }
 
 export class AnnouncementMapper {
@@ -23,6 +25,8 @@ export class AnnouncementMapper {
             date: announcementModel.dataValues.date,
             categories: announcementModel.dataValues.categories?.map((cat: Category) => CategoryMapper.toDTO(cat)),
             company: CompanyMapper.toDTO(announcementModel.dataValues.company),
+            maxStreamer: announcementModel.dataValues.maxStreamer,
+            status: announcementModel.dataValues.status,
         };
     };
 }
