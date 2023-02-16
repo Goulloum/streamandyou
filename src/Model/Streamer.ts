@@ -25,8 +25,8 @@ export class Streamer extends Model {
     @AllowNull(true)
     @Column(DataType.STRING)
     sexe!: string;
-    
-    @AllowNull(false)
+
+    @AllowNull(true)
     @Column(DataType.STRING)
     photo!: string;
 
@@ -35,5 +35,4 @@ export class Streamer extends Model {
 
     @BelongsToMany(() => Announcement, () => StreamerAnnouncement)
     announcements!: Announcement[];
-
 }
