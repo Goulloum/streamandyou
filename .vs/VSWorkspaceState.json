@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\Controller",
+    "\\src\\Mapper",
+    "\\src\\Model",
+    "\\src\\Service",
+    "\\src\\Utility"
+  ],
+  "SelectedNode": "\\src\\Controller\\CompanyController.ts",
+  "PreviewInSolutionExplorer": false
+}
