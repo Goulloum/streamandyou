@@ -24,6 +24,7 @@ export class Announcement extends Model {
     @Column(DataType.INTEGER)
     maxStreamer!: number;
 
+    @Default(1)
     @Column(DataType.BOOLEAN)
     status!: Boolean;
 
