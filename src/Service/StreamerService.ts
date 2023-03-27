@@ -174,14 +174,12 @@ export class StreamerService implements IService<Streamer> {
     public async authenticate(email: string, password: string): Promise<{ user: Streamer; token: string }> {
         const query = this.createQuery();
         query.where = { email: email };
-        console.log(email);
         const streamer = await this.streamerRepo.findOne(query);
         if (!streamer) {
             throw new Error("User not found !");
         }
 
         const authenticate = await PasswordUtility.comparePassword(password, streamer.dataValues.password);
-        console.log(authenticate);
         const token = jwt.sign({ streamer }, process.env.PRIVATE_KEY!, { expiresIn: 60 * 60 });
 
         if (!authenticate) {
