@@ -118,7 +118,7 @@ export class StreamerService implements IService<Streamer> {
         };
 
         const exist = await this.streamerRepo.findOne({ where: { email: updatedStreamerRaw.email } });
-        if (!!exist) {
+        if (!!exist && exist.id !== raw.id) {
             throw new Error("Email already exist !");
         }
 
