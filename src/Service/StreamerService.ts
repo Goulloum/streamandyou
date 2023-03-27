@@ -212,7 +212,9 @@ export class StreamerService implements IService<Streamer> {
         }
         await this.streamerAnnouncementRepo.create({ streamerId: streamerId, announcementId: announcementId });
 
-        const result = await this.streamerRepo.findOne(this.createQuery());
+        const query = this.createQuery();
+        query.where = { id: streamerId };
+        const result = await this.streamerRepo.findOne(query);
         if (!result) {
             throw new Error("An error occured while binding the announcement with the streamer !");
         }
