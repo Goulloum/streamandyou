@@ -122,8 +122,6 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Email already exist !");
         }
 
-        updatedStreamerRaw.password = await PasswordUtility.hashPassword(updatedStreamerRaw.password);
-
         const updatedCategoriesRaw: any[] = raw.categories;
 
         //Si le streamerId n'existe pas on renvoie une erreur
@@ -132,6 +130,10 @@ export class StreamerService implements IService<Streamer> {
         const streamer = await this.streamerRepo.findOne(query);
         if (!streamer) {
             throw new Error("Streamer not found !");
+        }
+
+        if (streamer.dataValues.password !== updatedStreamerRaw.password) {
+            updatedStreamerRaw.password = await PasswordUtility.hashPassword(updatedStreamerRaw.password);
         }
         //check si les categories ont besoin d'etre update
         if (streamer.categories !== updatedCategoriesRaw) {
@@ -172,13 +174,14 @@ export class StreamerService implements IService<Streamer> {
     public async authenticate(email: string, password: string): Promise<{ user: Streamer; token: string }> {
         const query = this.createQuery();
         query.where = { email: email };
-
+        console.log(email);
         const streamer = await this.streamerRepo.findOne(query);
         if (!streamer) {
             throw new Error("User not found !");
         }
 
         const authenticate = await PasswordUtility.comparePassword(password, streamer.dataValues.password);
+        console.log(authenticate);
         const token = jwt.sign({ streamer }, process.env.PRIVATE_KEY!, { expiresIn: 60 * 60 });
 
         if (!authenticate) {
