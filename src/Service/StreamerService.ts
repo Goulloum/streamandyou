@@ -224,10 +224,7 @@ export class StreamerService implements IService<Streamer> {
 
         //Si la relation existe deja et que le statut est en "désactivé", on le réactive
         if (!!existRelation && existRelation.dataValues.active === 2) {
-            const existRelation = await this.streamerAnnouncementRepo.update(
-                { active: 1 },
-                { where: { streamerId: streamerId, announcementId: announcementId } }
-            );
+            await this.streamerAnnouncementRepo.update({ active: 1 }, { where: { streamerId: streamerId, announcementId: announcementId } });
             const streamer = await this.findById(streamerId);
             if (!streamer) {
                 throw new Error("An error occured while recovering the streamer !");
