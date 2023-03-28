@@ -14,7 +14,7 @@ companyRouter.get("/getAll", async (req: Request, res: Response): Promise<Respon
         return res.status(200).send(companiesDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -28,7 +28,7 @@ companyRouter.post("/getById", async (req: Request, res: Response): Promise<Resp
         return res.status(200).send(CompanyMapper.toDTO(company));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -42,7 +42,7 @@ companyRouter.post("/add", async (req: Request, res: Response): Promise<Response
         return res.status(200).send(newCompany);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -52,7 +52,7 @@ companyRouter.post("/delete", async (req: Request, res: Response): Promise<Respo
         return res.status(200).send(deleted);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -66,7 +66,7 @@ companyRouter.post("/update", async (req: Request, res: Response): Promise<Respo
         return res.status(200).send(CompanyMapper.toDTO(updatedCompany));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -79,7 +79,7 @@ companyRouter.post("/getByName", async (req: Request, res: Response): Promise<Re
         return res.status(200).send(CompanyMapper.toDTO(company));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -90,6 +90,6 @@ companyRouter.get("/getMostActiveCompanies", async (req: Request, res: Response)
         return res.status(200).send(companiesDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });

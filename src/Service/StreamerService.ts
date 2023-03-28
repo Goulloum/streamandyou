@@ -205,6 +205,24 @@ export class StreamerService implements IService<Streamer> {
         }
 
         let existRelation = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
+
+        //Si la relation existe deja et que le statut est en "désactivé", on le réactive
+        if (!!existRelation && existRelation.dataValues.status === 2) {
+            const existRelation = await this.streamerAnnouncementRepo.update(
+                { status: 1 },
+                { where: { streamerId: streamerId, announcementId: announcementId } }
+            );
+            const streamer = await this.findById(streamerId);
+            if (!streamer) {
+                throw new Error("An error occured while recovering the streamer !");
+            }
+            return streamer;
+        }
+        //Si la relation existe déjà et que le statut est en "terminé", on envoie une erreur
+        if (!!existRelation && existRelation.dataValues.status === 0) {
+            throw new Error("The announcement was already marked as finished by the streamer !");
+        }
+        //sinon si la relation existe on ne fait rien et on renvoie le streamer d'origine
         if (!!existRelation) {
             return existStreamer;
         }
@@ -223,5 +241,34 @@ export class StreamerService implements IService<Streamer> {
         }
 
         return result;
+    }
+
+    public async changeAnnouncementStatus(streamerId: number, announcementId: number, status: number): Promise<Streamer> {
+        const exist = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
+        if (!exist) {
+            throw new Error("Can't find an existing relationship between the streamer and the announcement !");
+        }
+
+        if (status > 2 || status < 0) {
+            throw new Error("Status field must be an integer between 0 and 2 !");
+        }
+
+        const insert = await this.streamerAnnouncementRepo.update(
+            { status: status },
+            { where: { streamerId: streamerId, announcementId: announcementId } }
+        );
+        if (!insert) {
+            throw new Error("An error occcured while updating !");
+        }
+
+        const query = this.createQuery();
+        query.where = { id: streamerId };
+
+        const streamer = await this.streamerRepo.findOne(query);
+        if (!streamer) {
+            throw new Error("An error occured while recovering the streamer !");
+        }
+
+        return streamer;
     }
 }
