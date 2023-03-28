@@ -195,6 +195,7 @@ export class StreamerService implements IService<Streamer> {
     }
 
     public async addAnnouncement(streamerId: number, announcementId: number): Promise<Streamer> {
+        //Check si le streamer et l'annonce existent
         let existStreamer = await this.streamerRepo.findOne({ ...this.createQuery(), where: { id: streamerId } });
         if (!existStreamer) {
             throw new Error("Trying to add an announcement to a non-existing streamer !");
@@ -204,6 +205,21 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Trying to add a non-existing announcement to a streamer !");
         }
 
+        if (existAnnouncement.dataValues.status === 0) {
+            throw new Error("This announcement is not available anymore !");
+        }
+
+        //Check si le nombre max de personne est dépassé
+        const countRelationship = await this.streamerAnnouncementRepo.count({ where: { announcementId: announcementId } });
+        if (countRelationship >= existAnnouncement.dataValues.maxStreamer) {
+            throw new Error("This announcement have already reached it's max streamer's count !");
+        }
+        //Si c'est la dernière place, on met le status à 0 pour l'éteindre
+        if (countRelationship + 1 === existAnnouncement.dataValues.maxStreamer) {
+            await this.announcementRepo.update({ status: 0 }, { where: { id: announcementId } });
+        }
+
+        //Check si la relation existe et si oui logique
         let existRelation = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
 
         //Si la relation existe deja et que le statut est en "désactivé", on le réactive
