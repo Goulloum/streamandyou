@@ -243,18 +243,18 @@ export class StreamerService implements IService<Streamer> {
         return result;
     }
 
-    public async changeAnnouncementStatus(streamerId: number, announcementId: number, status: number): Promise<Streamer> {
+    public async changeAnnouncementActive(streamerId: number, announcementId: number, active: number): Promise<Streamer> {
         const exist = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
         if (!exist) {
             throw new Error("Can't find an existing relationship between the streamer and the announcement !");
         }
 
-        if (status > 2 || status < 0) {
+        if (active > 2 || active < 0) {
             throw new Error("Status field must be an integer between 0 and 2 !");
         }
 
         const insert = await this.streamerAnnouncementRepo.update(
-            { active: status },
+            { active: active },
             { where: { streamerId: streamerId, announcementId: announcementId } }
         );
         if (!insert) {

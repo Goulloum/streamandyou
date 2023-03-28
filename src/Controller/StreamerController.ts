@@ -123,9 +123,9 @@ streamerRouter.post("/addAnnouncement", async (req: Request, res: Response): Pro
     }
 });
 
-streamerRouter.post("/changeAnnouncementStatus", async (req: Request, res: Response): Promise<Response> => {
+streamerRouter.post("/changeAnnouncementActive", async (req: Request, res: Response): Promise<Response> => {
     try {
-        const streamer = await streamerService.changeAnnouncementStatus(req.body.streamer.id, req.body.announcement.id, req.body.status);
+        const streamer = await streamerService.changeAnnouncementActive(req.body.streamer.id, req.body.announcement.id, req.body.active);
         return res.status(200).send(StreamerMapper.toDTO(streamer));
     } catch (err: any) {
         console.log(err);
