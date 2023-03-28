@@ -40,7 +40,7 @@ export class StreamerMapper {
             telephone: streamerModel.dataValues.telephone,
             sexe: streamerModel.dataValues.sexe,
             categories: streamerModel.dataValues.categories?.map((cat: Category) => CategoryMapper.toDTO(cat)),
-            announcements: streamerModel.dataValues.announcements?.map((an: Announcement): AnnouncementStreamerDTO => {
+            announcements: streamerModel.dataValues.announcements?.map((an: any): AnnouncementStreamerDTO => {
                 return {
                     id: an.id,
                     name: an.dataValues.name,
@@ -49,7 +49,7 @@ export class StreamerMapper {
                     date: an.dataValues.date,
                     company: CompanyMapper.toDTO(an.dataValues.company),
                     dateAcceptedByStreamer: an.dataValues.StreamerAnnouncement.createdAt,
-                    active: an.dataValues.StreamerAnnouncement.active,
+                    active: an.dataValues.StreamerAnnouncement.dataValues.active,
                     maxStreamer: an.dataValues.maxStreamer,
                     status: an.dataValues.status,
                     categories: an.dataValues.categories?.map((cat: Category): CategorieDTO => CategoryMapper.toDTO(cat)),

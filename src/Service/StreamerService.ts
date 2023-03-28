@@ -207,9 +207,9 @@ export class StreamerService implements IService<Streamer> {
         let existRelation = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
 
         //Si la relation existe deja et que le statut est en "désactivé", on le réactive
-        if (!!existRelation && existRelation.dataValues.status === 2) {
+        if (!!existRelation && existRelation.dataValues.active === 2) {
             const existRelation = await this.streamerAnnouncementRepo.update(
-                { status: 1 },
+                { active: 1 },
                 { where: { streamerId: streamerId, announcementId: announcementId } }
             );
             const streamer = await this.findById(streamerId);
@@ -219,7 +219,7 @@ export class StreamerService implements IService<Streamer> {
             return streamer;
         }
         //Si la relation existe déjà et que le statut est en "terminé", on envoie une erreur
-        if (!!existRelation && existRelation.dataValues.status === 0) {
+        if (!!existRelation && existRelation.dataValues.active === 0) {
             throw new Error("The announcement was already marked as finished by the streamer !");
         }
         //sinon si la relation existe on ne fait rien et on renvoie le streamer d'origine
@@ -254,7 +254,7 @@ export class StreamerService implements IService<Streamer> {
         }
 
         const insert = await this.streamerAnnouncementRepo.update(
-            { status: status },
+            { active: status },
             { where: { streamerId: streamerId, announcementId: announcementId } }
         );
         if (!insert) {
