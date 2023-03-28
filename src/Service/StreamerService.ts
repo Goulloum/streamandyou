@@ -249,8 +249,12 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Can't find an existing relationship between the streamer and the announcement !");
         }
 
-        if (active > 2 || active < 0) {
-            throw new Error("Status field must be an integer between 0 and 2 !");
+        if (exist.dataValues.active !== 1) {
+            throw new Error("Changing the status of an announcement that is already finished or abandoned is prohibed !");
+        }
+
+        if (active !== 2 && active !== 0) {
+            throw new Error("You are only allowed to change the status field to 0 or 2 !");
         }
 
         const insert = await this.streamerAnnouncementRepo.update(
