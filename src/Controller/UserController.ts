@@ -13,7 +13,7 @@ userRouter.get("/getAll", async (req: Request, res: Response): Promise<Response>
         return res.status(200).send(usersDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -26,7 +26,7 @@ userRouter.post("/getById", async (req: Request, res: Response): Promise<Respons
         return res.status(200).send(UserMapper.toDTO(user));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -42,7 +42,7 @@ userRouter.post("/add", async (req: Request, res: Response): Promise<Response> =
         return res.status(200).send(UserMapper.toDTO(newUser));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -52,7 +52,7 @@ userRouter.post("/authenticate", async (req: Request, res: Response): Promise<Re
         return res.status(200).send(UserMapper.toDTO(user));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -68,7 +68,7 @@ userRouter.post("/update", async (req: Request, res: Response): Promise<Response
         return res.status(200).send(UserMapper.toDTO(updatedUser));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -78,7 +78,7 @@ userRouter.post("/delete", async (req: Request, res: Response): Promise<Response
         return res.status(200).send(deleted);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -93,6 +93,6 @@ userRouter.post("/getByUsername", async (req: Request, res: Response): Promise<R
         return res.status(200).send(UserMapper.toDTO(user));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });

@@ -9,7 +9,6 @@ import jwt from "jsonwebtoken";
 import { Announcement } from "../Model/Announcement";
 import { StreamerAnnouncement } from "../Model/StreamerAnnouncement";
 import { Company } from "../Model/Company";
-import { Repository } from "sequelize-typescript";
 
 export class StreamerService implements IService<Streamer> {
     private streamerRepo = connection.getRepository(Streamer);
@@ -29,7 +28,7 @@ export class StreamerService implements IService<Streamer> {
             where: {},
             include: [
                 { model: this.categoryRepo, where: {}, required: false },
-                { model: this.announcementRepo, where: {}, required: false, include: [] as any },
+                { model: this.announcementRepo, where: {}, required: false, include: [this.companyRepo, this.categoryRepo] },
             ],
         };
     };
@@ -102,8 +101,6 @@ export class StreamerService implements IService<Streamer> {
     public async findById(id: number): Promise<Streamer | null> {
         const query = this.createQuery();
         query.where = { id: id };
-        query.include[1].include?.push(this.companyRepo);
-
         const streamer = await this.streamerRepo.findOne(query);
         return streamer;
     }
@@ -127,8 +124,6 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Email already exist !");
         }
 
-        updatedStreamerRaw.password = await PasswordUtility.hashPassword(updatedStreamerRaw.password);
-
         const updatedCategoriesRaw: any[] = raw.categories;
 
         //Si le streamerId n'existe pas on renvoie une erreur
@@ -137,6 +132,10 @@ export class StreamerService implements IService<Streamer> {
         const streamer = await this.streamerRepo.findOne(query);
         if (!streamer) {
             throw new Error("Streamer not found !");
+        }
+
+        if (streamer.dataValues.password !== updatedStreamerRaw.password) {
+            updatedStreamerRaw.password = await PasswordUtility.hashPassword(updatedStreamerRaw.password);
         }
         //check si les categories ont besoin d'etre update
         if (streamer.categories !== updatedCategoriesRaw) {
@@ -177,7 +176,6 @@ export class StreamerService implements IService<Streamer> {
     public async authenticate(email: string, password: string): Promise<{ user: Streamer; token: string }> {
         const query = this.createQuery();
         query.where = { email: email };
-
         const streamer = await this.streamerRepo.findOne(query);
         if (!streamer) {
             throw new Error("User not found !");
@@ -197,6 +195,7 @@ export class StreamerService implements IService<Streamer> {
     }
 
     public async addAnnouncement(streamerId: number, announcementId: number): Promise<Streamer> {
+        //Check si le streamer et l'annonce existent
         let existStreamer = await this.streamerRepo.findOne({ ...this.createQuery(), where: { id: streamerId } });
         if (!existStreamer) {
             throw new Error("Trying to add an announcement to a non-existing streamer !");
@@ -206,7 +205,37 @@ export class StreamerService implements IService<Streamer> {
             throw new Error("Trying to add a non-existing announcement to a streamer !");
         }
 
+        if (existAnnouncement.dataValues.status === 0) {
+            throw new Error("This announcement is not available anymore !");
+        }
+
+        //Check si le nombre max de personne est dépassé
+        const countRelationship = await this.streamerAnnouncementRepo.count({ where: { announcementId: announcementId } });
+        if (countRelationship >= existAnnouncement.dataValues.maxStreamer) {
+            throw new Error("This announcement have already reached it's max streamer's count !");
+        }
+        //Si c'est la dernière place, on met le status à 0 pour l'éteindre
+        if (countRelationship + 1 === existAnnouncement.dataValues.maxStreamer) {
+            await this.announcementRepo.update({ status: 0 }, { where: { id: announcementId } });
+        }
+
+        //Check si la relation existe et si oui logique
         let existRelation = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
+
+        //Si la relation existe deja et que le statut est en "désactivé", on le réactive
+        if (!!existRelation && existRelation.dataValues.active === 2) {
+            await this.streamerAnnouncementRepo.update({ active: 1 }, { where: { streamerId: streamerId, announcementId: announcementId } });
+            const streamer = await this.findById(streamerId);
+            if (!streamer) {
+                throw new Error("An error occured while recovering the streamer !");
+            }
+            return streamer;
+        }
+        //Si la relation existe déjà et que le statut est en "terminé", on envoie une erreur
+        if (!!existRelation && existRelation.dataValues.active === 0) {
+            throw new Error("The announcement was already marked as finished by the streamer !");
+        }
+        //sinon si la relation existe on ne fait rien et on renvoie le streamer d'origine
         if (!!existRelation) {
             return existStreamer;
         }
@@ -217,11 +246,46 @@ export class StreamerService implements IService<Streamer> {
         }
         await this.streamerAnnouncementRepo.create({ streamerId: streamerId, announcementId: announcementId });
 
-        const result = await this.streamerRepo.findOne(this.createQuery());
+        const query = this.createQuery();
+        query.where = { id: streamerId };
+        const result = await this.streamerRepo.findOne(query);
         if (!result) {
             throw new Error("An error occured while binding the announcement with the streamer !");
         }
 
         return result;
+    }
+
+    public async changeAnnouncementActive(streamerId: number, announcementId: number, active: number): Promise<Streamer> {
+        const exist = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });
+        if (!exist) {
+            throw new Error("Can't find an existing relationship between the streamer and the announcement !");
+        }
+
+        if (exist.dataValues.active !== 1) {
+            throw new Error("Changing the status of an announcement that is already finished or abandoned is prohibed !");
+        }
+
+        if (active !== 2 && active !== 0) {
+            throw new Error("You are only allowed to change the status field to 0 or 2 !");
+        }
+
+        const insert = await this.streamerAnnouncementRepo.update(
+            { active: active },
+            { where: { streamerId: streamerId, announcementId: announcementId } }
+        );
+        if (!insert) {
+            throw new Error("An error occcured while updating !");
+        }
+
+        const query = this.createQuery();
+        query.where = { id: streamerId };
+
+        const streamer = await this.streamerRepo.findOne(query);
+        if (!streamer) {
+            throw new Error("An error occured while recovering the streamer !");
+        }
+
+        return streamer;
     }
 }

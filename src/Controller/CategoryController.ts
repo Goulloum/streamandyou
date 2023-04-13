@@ -27,7 +27,7 @@ categoryRouter.get("/getAll", async (req: Request, res: Response): Promise<Respo
         return res.status(200).send(categoriesDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -40,7 +40,7 @@ categoryRouter.post("/getById", async (req: Request, res: Response): Promise<Res
         return res.status(200).send(CategoryMapper.toDTO(category));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -53,7 +53,7 @@ categoryRouter.post("/add", async (req: Request, res: Response): Promise<Respons
         return res.status(200).send(CategoryMapper.toDTO(newCategory));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -68,7 +68,7 @@ categoryRouter.post("/update", async (req: Request, res: Response): Promise<Resp
         return res.status(200).send(CategoryMapper.toDTO(update));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -78,7 +78,7 @@ categoryRouter.post("/delete", async (req: Request, res: Response): Promise<Resp
         return res.status(200).send(deleted);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -91,6 +91,6 @@ categoryRouter.post("/getByLibelle", async (req: Request, res: Response): Promis
         return res.status(200).send(CategoryMapper.toDTO(category));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });

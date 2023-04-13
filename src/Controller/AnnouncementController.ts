@@ -17,7 +17,7 @@ announcementRouter.post("/getById", async (req: Request, res: Response): Promise
         return res.status(200).send(AnnouncementMapper.toDTO(announcement));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -28,7 +28,7 @@ announcementRouter.get("/getAll", async (req: Request, res: Response): Promise<R
         return res.status(200).send(announcementsDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -47,7 +47,7 @@ announcementRouter.post("/add", async (req: Request, res: Response): Promise<Res
         return res.status(200).send(AnnouncementMapper.toDTO(newAnnouncement));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -57,7 +57,7 @@ announcementRouter.post("/delete", async (req: Request, res: Response): Promise<
         return res.status(200).send(deleted);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -76,7 +76,7 @@ announcementRouter.post("/update", async (req: Request, res: Response): Promise<
         return res.status(200).send(update);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -88,7 +88,7 @@ announcementRouter.post("/getByCompany", async (req: Request, res: Response): Pr
         return res.status(200).send(announcementsDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -100,7 +100,7 @@ announcementRouter.post("/getRecent", async (req: Request, res: Response): Promi
         return res.status(200).send(announcementsDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -112,6 +112,6 @@ announcementRouter.post("/getAllByOrder", async (req: Request, res: Response): P
         return res.status(200).send(streamersDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });

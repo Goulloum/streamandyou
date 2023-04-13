@@ -13,7 +13,7 @@ streamerRouter.get("/getAll", async (req: Request, res: Response): Promise<Respo
         return res.status(200).send(streamersDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -26,7 +26,7 @@ streamerRouter.post("/getById", async (req: Request, res: Response): Promise<Res
         return res.status(200).send(StreamerMapper.toDTO(streamer));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -45,7 +45,7 @@ streamerRouter.post("/add", async (req: Request, res: Response): Promise<Respons
         return res.status(200).send(StreamerMapper.toDTO(newStreamer));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -65,7 +65,7 @@ streamerRouter.post("/update", async (req: Request, res: Response): Promise<Resp
         return res.status(200).send(StreamerMapper.toDTO(updatedStreamer));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -78,7 +78,7 @@ streamerRouter.post("/getByName", async (req: Request, res: Response): Promise<R
         return res.status(200).send(StreamerMapper.toDTO(streamer));
     } catch (err: any) {
         console.log(err);
-        return res.send(301).send(err.message);
+        return res.send(400).send(err.message);
     }
 });
 
@@ -89,7 +89,7 @@ streamerRouter.post("/getByCategories", async (req: Request, res: Response): Pro
         return res.status(200).send(streamersDTO);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -99,7 +99,7 @@ streamerRouter.post("/delete", async (req: Request, res: Response): Promise<Resp
         return res.status(200).send(deleted);
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -109,7 +109,7 @@ streamerRouter.post("/authenticate", async (req: Request, res: Response): Promis
         return res.status(200).send({ ...authenticate, user: StreamerMapper.toDTO(authenticate.user) });
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
     }
 });
 
@@ -119,6 +119,16 @@ streamerRouter.post("/addAnnouncement", async (req: Request, res: Response): Pro
         return res.status(200).send(StreamerMapper.toDTO(streamer));
     } catch (err: any) {
         console.log(err);
-        return res.status(301).send(err.message);
+        return res.status(400).send(err.message);
+    }
+});
+
+streamerRouter.post("/changeAnnouncementActive", async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const streamer = await streamerService.changeAnnouncementActive(req.body.streamer.id, req.body.announcement.id, req.body.active);
+        return res.status(200).send(StreamerMapper.toDTO(streamer));
+    } catch (err: any) {
+        console.log(err);
+        return res.status(400).send(err.message);
     }
 });
