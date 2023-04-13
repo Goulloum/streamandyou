@@ -102,7 +102,7 @@ export class UserService implements IService<User> {
         return user;
     }
 
-    public async authenticate(username: string, password: string): Promise<Boolean> {
+    public async authenticate(username: string, password: string): Promise<User> {
         const query = this.createQuery();
         query.where = { username: username };
 
@@ -113,6 +113,10 @@ export class UserService implements IService<User> {
 
         const authenticate = await PasswordUtility.comparePassword(password, user.dataValues.password);
 
-        return authenticate;
+        if (!authenticate) {
+            throw new Error("User not found !");
+        }
+
+        return user;
     }
 }

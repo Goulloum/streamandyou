@@ -8,6 +8,8 @@ import { IService } from "./IService";
 import jwt from "jsonwebtoken";
 import { Announcement } from "../Model/Announcement";
 import { StreamerAnnouncement } from "../Model/StreamerAnnouncement";
+import { Company } from "../Model/Company";
+import { Repository } from "sequelize-typescript";
 
 export class StreamerService implements IService<Streamer> {
     private streamerRepo = connection.getRepository(Streamer);
@@ -20,12 +22,14 @@ export class StreamerService implements IService<Streamer> {
 
     private streamerCategoryRepo = connection.getRepository(StreamerCategory);
 
+    private companyRepo = connection.getRepository(Company);
+
     private createQuery = () => {
         return {
             where: {},
             include: [
                 { model: this.categoryRepo, where: {}, required: false },
-                { model: this.announcementRepo, where: {}, required: false },
+                { model: this.announcementRepo, where: {}, required: false, include: [] as any },
             ],
         };
     };
@@ -98,8 +102,9 @@ export class StreamerService implements IService<Streamer> {
     public async findById(id: number): Promise<Streamer | null> {
         const query = this.createQuery();
         query.where = { id: id };
-        const streamer = await this.streamerRepo.findOne(query);
+        query.include[1].include?.push(this.companyRepo);
 
+        const streamer = await this.streamerRepo.findOne(query);
         return streamer;
     }
     public async findAll(): Promise<Streamer[]> {
@@ -118,7 +123,7 @@ export class StreamerService implements IService<Streamer> {
         };
 
         const exist = await this.streamerRepo.findOne({ where: { email: updatedStreamerRaw.email } });
-        if (!!exist) {
+        if (!!exist && exist.id !== raw.id) {
             throw new Error("Email already exist !");
         }
 

@@ -4,6 +4,8 @@ import { Category } from "../Model/Category";
 import { Streamer } from "../Model/Streamer";
 import { AnnouncementDTO, AnnouncementMapper } from "./AnnouncementMapper";
 import { CategorieDTO, CategoryMapper } from "./CategoryMapper";
+import { CompanyService } from "../Service/CompanyService";
+import { Company } from "../Model/Company";
 
 export interface StreamerDTO {
     id: number;
@@ -23,7 +25,7 @@ interface AnnouncementStreamerDTO {
     price: number;
     description: string;
     date: Date;
-    companyId: number;
+    company: Company;
     dateAcceptedByStreamer: Date;
     active: number;
     maxStreamer?: number;
@@ -40,14 +42,14 @@ export class StreamerMapper {
             telephone: streamerModel.dataValues.telephone,
             sexe: streamerModel.dataValues.sexe,
             categories: streamerModel.dataValues.categories?.map((cat: Category) => CategoryMapper.toDTO(cat)),
-            announcements: streamerModel.dataValues.announcements?.map((an: Announcement) => {
+            announcements: streamerModel.dataValues.announcements?.map((an: Announcement): AnnouncementStreamerDTO => {
                 return {
                     id: an.id,
                     name: an.dataValues.name,
                     price: an.dataValues.price,
                     description: an.dataValues.description,
                     date: an.dataValues.date,
-                    companyId: an.dataValues.companyId,
+                    company: an.dataValues.company,
                     dateAcceptedByStreamer: an.dataValues.StreamerAnnouncement.createdAt,
                     active: an.dataValues.StreamerAnnouncement.active,
                     maxStreamer: an.dataValues.maxStreamer,

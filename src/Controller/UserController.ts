@@ -48,8 +48,8 @@ userRouter.post("/add", async (req: Request, res: Response): Promise<Response> =
 
 userRouter.post("/authenticate", async (req: Request, res: Response): Promise<Response> => {
     try {
-        const authenticate = await userService.authenticate(req.body.username, req.body.password);
-        return res.status(200).send(authenticate);
+        const user = await userService.authenticate(req.body.username, req.body.password);
+        return res.status(200).send(UserMapper.toDTO(user));
     } catch (err: any) {
         console.log(err);
         return res.status(301).send(err.message);
