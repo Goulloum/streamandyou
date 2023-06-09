@@ -211,13 +211,13 @@ export class StreamerService implements IService<Streamer> {
 
         //Check si le nombre max de personne est dépassé
         const countRelationship = await this.streamerAnnouncementRepo.count({ where: { announcementId: announcementId } });
-        if (countRelationship >= existAnnouncement.dataValues.maxStreamer) {
-            throw new Error("This announcement have already reached it's max streamer's count !");
-        }
+        // if (countRelationship >= existAnnouncement.dataValues.maxStreamer) {
+        //     throw new Error("This announcement have already reached it's max streamer's count !");
+        // }
         //Si c'est la dernière place, on met le status à 0 pour l'éteindre
-        if (countRelationship + 1 === existAnnouncement.dataValues.maxStreamer) {
-            await this.announcementRepo.update({ status: 0 }, { where: { id: announcementId } });
-        }
+        // if (countRelationship + 1 === existAnnouncement.dataValues.maxStreamer) {
+        //     await this.announcementRepo.update({ status: 0 }, { where: { id: announcementId } });
+        // }
 
         //Check si la relation existe et si oui logique
         let existRelation = await this.streamerAnnouncementRepo.findOne({ where: { streamerId: streamerId, announcementId: announcementId } });

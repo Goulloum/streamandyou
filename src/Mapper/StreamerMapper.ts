@@ -32,6 +32,7 @@ interface AnnouncementStreamerDTO {
 
 export class StreamerMapper {
     public static toDTO = (streamerModel: Streamer): StreamerDTO => {
+        console.log(streamerModel);
         return {
             id: streamerModel.id,
             name: streamerModel.dataValues.name,
